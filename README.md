@@ -11,6 +11,7 @@ We implemented and compared Perceptron, Adaline (SGD), Logistic Regression, and 
 
 ## Repository Structure
 
+```
 ├── data/
 │   ├── project_adult.csv
 │   └── project_validation_inputs.csv
@@ -27,5 +28,5 @@ We implemented and compared Perceptron, Adaline (SGD), Logistic Regression, and 
 ├── notebooks/                 # (Optional) for exploratory analysis
 ├── figures/                   # Misclassification/MSE plots & decision boundaries
 └── README.md                  # This file
-
+```
 
