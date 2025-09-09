@@ -1,6 +1,6 @@
 # Machine Learning Project 1 – Classification Algorithms
 
-Course: DASC 41103 – Machine Learning
+Course: DASC 41103 – Machine Learning  
 Members: Coy Morris, Hunter Hill
 
 ## Project Overview
