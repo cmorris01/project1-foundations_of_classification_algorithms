@@ -60,7 +60,8 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     processed_array = preprocessor.fit_transform(df)
     feature_names = preprocessor.get_feature_names_out()
 
-    processed_df = pd.DataFrame(data=processed_array, columns=feature_names, index=df.index)
+    processed_df = pd.DataFrame(data=processed_array, # type: ignore[arg-type]
+                                columns=feature_names, index=df.index)
 
     # Add ID column(s) back (untouched)
     if id_columns:
