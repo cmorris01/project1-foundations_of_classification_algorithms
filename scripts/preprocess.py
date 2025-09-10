@@ -72,7 +72,7 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
 
     return processed_df
 
-def split_data(df: pd.DataFrame, target_column: str, test_size: float = 0.2, random_state: int = 42):
+def split_data(df: pd.DataFrame, target_column: str, test_size: float = 0.2, random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
     """Split the dataframe in training and test sets."""
     if target_column not in df.columns:
         raise ValueError(f"Target column {target_column} not found in dataframe.")
