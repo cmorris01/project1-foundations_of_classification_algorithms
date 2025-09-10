@@ -8,7 +8,6 @@ This script includes functions for:
 - encoding categorical features
 - scaling and normalizing numerical features
 - splitting data into training, validation, and test sets
-- saving preprocessed outputs for downstream modeling
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 import os
@@ -32,9 +31,13 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     # Create copy to avoid modifying original dataframe
     df = df.copy()
 
-    # Identify feature types
+    # Identify feature types. Exclude id column from being included in transformations
     categorical_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
     numerical_cols = df.select_dtypes(include=[np.number]).columns.tolist()
+    id_columns = []
+    if "Unnamed: 0" in numerical_cols:
+        numerical_cols.remove("Unnamed: 0")
+        id_columns.append("Unnamed: 0")
 
     # Define transformers for numerical and categorical features
     numerical_transformer = Pipeline(steps=[
@@ -58,6 +61,14 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     feature_names = preprocessor.get_feature_names_out()
 
     processed_df = pd.DataFrame(data=processed_array, columns=feature_names, index=df.index)
+
+    # Add ID column(s) back (untouched)
+    if id_columns:
+        processed_df[id_columns] = df[id_columns]
+
+    # Reorder columns so ID is first again
+    processed_df = processed_df[id_columns + feature_names.tolist()]
+
     return processed_df
 
 def split_data(df: pd.DataFrame, target_column: str, test_size: float = 0.2, random_state: int = 42):
@@ -71,9 +82,3 @@ def split_data(df: pd.DataFrame, target_column: str, test_size: float = 0.2, ran
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=y)
     
     return X_train, X_test, y_train, y_test
-
-if __name__ == "__main__":
-    raw_data_path = Path("data/project_adult.csv")
-    raw_data = load_data(raw_data_path)
-    preprocessed_data = preprocess_data(raw_data)
-    preprocessed_data.to_csv("data/preprocessed_adult.csv", index=False)
