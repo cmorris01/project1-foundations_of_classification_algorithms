@@ -22,25 +22,28 @@ from pathlib import Path
 
 class DataHandler:
     """Class for handling data loading and preprocessing."""
-    def __init__(self, file_path: Path | str):
-        self.file_path = file_path
-        self.data = self.load_data(file_path)
+    def __init__(self):
+        self.data = {}
         self.fit_transformers = None
 
-    def load_data(self, file_path: Path | str) -> pd.DataFrame:
+    def load_data_into_class(self, file_path: Path | str) -> None:
         """Load dataset from a CSV file."""
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File {file_path} does not exist.")
-        return pd.read_csv(file_path)
-    
-    def split_data(self, target_column: str, test_size: float = 0.2, random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-        """Split the dataframe in training and test sets."""
-        if target_column not in self.data.columns:
+        self.data[file_path] = pd.read_csv(file_path)
+
+    def pop_dataset_from_class(self, file_path: Path | str) -> pd.DataFrame:
+        """Method to pop dataset from data handler."""
+        return self.data[file_path]
+
+    def split_data(self, filepath, target_column: str, test_size: float = 0.2, random_state: int = 42) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
+        """Split a dataframe from in training and test sets."""
+        if target_column not in self.data[filepath].columns:
             raise ValueError(f"Target column {target_column} not found in dataframe.")
-        
-        X = self.data.drop(columns=[target_column])
-        y = self.data[target_column]
-        
+
+        X = self.data[filepath].drop(columns=[target_column])
+        y = self.data[filepath][target_column]
+
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state, stratify=y)
         
         return X_train, X_test, y_train, y_test
