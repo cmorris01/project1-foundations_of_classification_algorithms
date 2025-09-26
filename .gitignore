@@ -4,3 +4,6 @@ scripts/__pycache__/
 
 # ignore .idea
 .idea
+
+# ignore DS STORE
+.DS_Store
